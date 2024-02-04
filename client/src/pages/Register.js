@@ -1,13 +1,11 @@
 // Register.js
 
 import React, { useState } from 'react';
-import { Navigate } from 'react-router-dom';
 const Register = () => {
 
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
-  const [navigate, setNavigate] = useState(false);
   const [error, setError] = useState('');
 
   const handleSubmit = async (event) => {
@@ -26,7 +24,7 @@ const Register = () => {
       return;
     };
     if (password.length < 8) {
-      setError('Password must be at least 8 characters long.');
+      setError('Password must be at least 8 characters long!');
       return;
     };
     
@@ -41,24 +39,19 @@ const Register = () => {
           password,
         }),
       });
-
       if (!response.ok) {
-        console.error('Registration failed:', response.statusText);
+        setError('There is already an user with that username!');
         return;
       }
 
       console.log('Registration successful!');
-      setNavigate(true);
+      window.location.href = 'login/';
 
     } catch (error) {
       console.error('Error during registration:', error);
     }
     console.log('Registering with:', username, password, confirmPassword);
   };
-
-  if (navigate) {
-    return <Navigate to="/" />;
-  }
 
   return (
     <div id="container">

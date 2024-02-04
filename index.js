@@ -57,14 +57,12 @@ app.get('/api', (req, res) => {
   res.json({ message: 'Hello from the API!' });
 });
 
-app.get('/login', (req, res) => {
 
-  res.json({ message: 'Hello from the login!' });
-});
-
-
-const registerRouter = require('./routes/register')
+const registerRouter = require('./routes/register');
 app.use('/register', registerRouter)
+
+const loginRouter = require('./routes/login');
+app.use('/login', loginRouter)
 
 app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}`);

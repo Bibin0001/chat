@@ -4,9 +4,41 @@ import React, { useState } from 'react';
 const Login = () => {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
+  const [error, setError] = useState('');
 
-  const handleLogin = () => {
-    // Implement yer login logic here
+  const handleSubmit = async (event) => {
+    try {
+      const response = await fetch('http://localhost:5000/login', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            username,
+            password,
+          }),
+        });
+
+      console.log(response);
+      if (!response.ok) {
+          setError('Wrong username or password!');
+          return;
+        }
+      
+      const data = await response.json()
+
+      if (data.success) {
+        document.cookie = `token=${data.token}; path=/;`;
+        window.location.href = '/';
+
+      }
+
+
+    } catch (error) {
+      console.error('Error during logging:', error);
+      };
+
+   // Implement yer login logic here
     console.log('Logging in with:', { username, password });
   };
 
@@ -32,7 +64,10 @@ const Login = () => {
           />
         </label>
         <br />
-        <button type="button" onClick={handleLogin}>
+
+        {error && <p style={{ color: 'red' }}>{error}</p>}
+
+        <button type="button" onClick={handleSubmit}>
           Login
         </button>
       </form>
