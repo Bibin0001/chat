@@ -1,4 +1,3 @@
-// client/src/Login.js
 import React, { useState } from 'react';
 
 const Login = () => {
@@ -19,7 +18,7 @@ const Login = () => {
           }),
         });
 
-      console.log(response);
+      
       if (!response.ok) {
           setError('Wrong username or password!');
           return;
@@ -28,7 +27,7 @@ const Login = () => {
       const data = await response.json()
 
       if (data.success) {
-        document.cookie = `token=${data.token}; path=/;`;
+        document.cookie = `token=${data.token}; `;
         window.location.href = '/';
 
       }
@@ -38,8 +37,6 @@ const Login = () => {
       console.error('Error during logging:', error);
       };
 
-   // Implement yer login logic here
-    console.log('Logging in with:', { username, password });
   };
 
   return (
