@@ -1,5 +1,6 @@
 const User = require('../models/user');
 const bcrypt = require('bcryptjs');
+const jwt = require('jsonwebtoken')
 
 module.exports = class BaseUser {
 
@@ -29,36 +30,26 @@ module.exports = class BaseUser {
     return true
   }
 
-  login(username, password){
+  async login(){
+    const currentUser = await User.findOne({username: this.username})
+    const currentUnixTime = Math.floor(new Date().getTime() / 1000);
 
+    if (currentUser && (bcrypt.compareSync(this.password, currentUser.password))) {
+      const token = jwt.sign(
+          {username: currentUser.username, time_created: currentUnixTime },
+          "verySecretKey",
+          {
+            expiresIn: "2h",
+          })
+      
+      currentUser.token = token;
+      return token
+    } 
+
+    else {
+      return false
+    }
+    
   }
 }
-
-//class BaseUser{}
-/*
-
-
-
-class UserClass {
-
-  constructor(username){
-    this.username = username;
-  }
-
-  sendMessage(room,  ){
-
-  }
-
-  likeMessage(){
-
-  }
-
-  deleteMessage(){
-
-  }
-
-}
-*/
-
-
 

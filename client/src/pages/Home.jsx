@@ -19,8 +19,8 @@ const Home = () => {
 
     const data = await response.json()
 
-    setRooms(data.Room);
-    setGroupRooms(data.groupRooms);
+    setRooms(data.room || []);
+    setGroupRooms(data.groupRooms || []);
 
 
   }

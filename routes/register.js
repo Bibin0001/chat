@@ -6,14 +6,10 @@ const bcrypt = require('bcryptjs');
 
 router.post('/', async (req, res) => {
   const { username, password } = req.body;
-  console.log(username);
-  console.log(password);
-
   const user = new BaseUser(username, password);
-
   userRegistration = await user.register()
+
   // Checks if an user with that username exists if not he is registered to DB, with a hashed password
-  
   if (userRegistration === true){
     res.status(201).json({ message: 'User registered successfully.' });
 
