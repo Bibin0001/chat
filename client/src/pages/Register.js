@@ -1,10 +1,13 @@
+// Register.js
 
 import React, { useState } from 'react';
+import { Navigate } from 'react-router-dom';
 const Register = () => {
 
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
+  const [navigate, setNavigate] = useState(false);
   const [error, setError] = useState('');
 
   const handleSubmit = async (event) => {
@@ -44,13 +47,17 @@ const Register = () => {
       }
 
       console.log('Registration successful!');
-      window.location.href = 'login/';
+      setNavigate(true);
 
     } catch (error) {
       console.error('Error during registration:', error);
     }
     console.log('Registering with:', username, password, confirmPassword);
   };
+
+  if (navigate) {
+    return <Navigate to="/login" />;
+  }
 
   return (
     <div id="container">

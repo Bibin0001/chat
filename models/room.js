@@ -2,8 +2,7 @@ const mongoose = require("mongoose");
 
 const Schema = mongoose.Schema;
 
-const groupChatSchema = new Schema({
-  admins : [{ type: String, ref: 'User', required: true }],
+const chatRoom = new Schema({
   participants: [{ type: String, ref: 'User', required: true }], 
   messages: [
     {
@@ -17,5 +16,4 @@ const groupChatSchema = new Schema({
 });
 
 
-module.exports = mongoose.model('groupChat', groupChatSchema );
-
+module.exports = mongoose.model('chatRoom', chatRoom);

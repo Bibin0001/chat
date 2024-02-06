@@ -48,14 +48,8 @@ mongoose.connect(uriDatabase)
 
 mongoose.set('strictQuery', false);
 
-// Routers
 
-/*
-app.get('/', requireAuth, (req, res) => {
-  res.send('Hello from the server!');
-});
-*/
-
+// Routes :  
 const homeRouter = require('./routes/home.js')
 app.use('/', homeRouter)
 

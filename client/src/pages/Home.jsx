@@ -3,8 +3,8 @@ import React, { useState, useEffect } from 'react';
 const Home = () => {
 
   const token = document.cookie.split('=')[1]
-  const [regularChats, setRegularChats] = useState([]);
-  const [groupChats, setGroupChats] = useState([]);
+  const [room, setRooms] = useState([]);
+  const [groupRoom, setGroupRooms] = useState([]);
 
   const fetchData = async() => {
     //console.log(token);
@@ -19,8 +19,8 @@ const Home = () => {
 
     const data = await response.json()
 
-    setRegularChats(data.regular_chats);
-    setGroupChats(data.group_chats);
+    setRooms(data.Room);
+    setGroupRooms(data.groupRooms);
 
 
   }
@@ -32,7 +32,7 @@ const Home = () => {
     <div>
       <h2>Home pageee</h2>
 
-      {regularChats.length === 0 && groupChats.length === 0 && (
+      {room.length === 0 && groupRoom.length === 0 && (
         <p>No chats available.</p>
       )}
     </div>
