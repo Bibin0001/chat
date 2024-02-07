@@ -5,7 +5,7 @@ const User = require('../models/user');
 const { compare } = require("bcryptjs");
 const bcrypt = require('bcryptjs')
 const jwt = require('jsonwebtoken')
-const BaseUser = require('../controllers/userClass')
+const { BaseUser }= require('../controllers/userClass')
 
 router.post('/', async (req, res) => {
   username = req.body.username

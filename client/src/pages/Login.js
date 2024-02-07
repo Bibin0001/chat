@@ -27,7 +27,7 @@ const Login = () => {
       const data = await response.json()
 
       if (data.success) {
-        document.cookie = `token=${data.token}; `;
+        document.cookie = `token=${data.loginUser}; `;
         window.location.href = '/';
 
       }

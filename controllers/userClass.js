@@ -2,7 +2,7 @@ const User = require('../models/user');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken')
 
-module.exports = class BaseUser {
+class BaseUser {
 
   constructor(username, password){
     this.username = username;
@@ -53,3 +53,19 @@ module.exports = class BaseUser {
   }
 }
 
+
+class UserMessaging extends BaseUser{
+  constructor(username){
+
+    super(username)
+  }
+
+
+}
+
+
+  
+module.exports = {
+  BaseUser,
+  UserMessaging,
+};
