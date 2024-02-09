@@ -13,8 +13,7 @@ class RoomClass{
     const newRoom = new Room({ participants: [this.clientUser, this.recipient] });
     await newRoom.save();
 
-    return true
-
+    return newRoom.id
   }
 
 }

@@ -5,12 +5,12 @@ import Home from './pages/Home';
 import Login from './pages/Login';
 import Register from './pages/Register';
 import PrivateRoute from './components/PrivateRoute.js'
+import Room from './pages/Room.js';
 import React, { useState, useEffect } from 'react';
 
 
 function App() {
   const [token, setToken] = useState(document.cookie.split('=')[1]);
-
   const HomeRoute = () => {
 
     return token ? <Home /> : <Navigate to="/login" />;
@@ -19,9 +19,10 @@ function App() {
   return (
     <BrowserRouter>
       <Routes>
-        <Route path='login/' element={< Login/>}> </Route>
-        <Route path='register/' element={< Register/>}> </Route>
-        <Route path='/' element={<HomeRoute />}> </Route>
+        <Route path='login/' element={<Login/>}> </Route>
+        <Route path='register/' element={<Register/>}> </Route>
+        <Route path='/' element={<HomeRoute/>}> </Route>
+        <Route path='/:roomId' element={<Room/>}> </Route>
 
       </Routes>
     </BrowserRouter>

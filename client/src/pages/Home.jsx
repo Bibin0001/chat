@@ -20,7 +20,7 @@ const Home = () => {
         });
 
         const data = await response.json();
-        setRooms(data.room || []);
+        setRooms(data.Room || []);
         setGroupRooms(data.groupRooms || []);
       } catch (error) {
         console.error('Error fetching data:', error);
@@ -54,6 +54,49 @@ const Home = () => {
     }
   };
 
+  const handleUserClick = async (user) => {
+    console.log('Selected user:', user);
+    const response = await fetch('http://localhost:5000/room/check-or-create-room', {
+      method: 'POST',
+      headers: {
+        'Authorization': `Bearer ${token}`,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        recipient: user,
+      }),
+      credentials: 'include',
+    });
+
+
+    const data = await response.json();
+    const roomId = data.roomId;
+
+    window.location.href = `/${roomId}`;
+    
+  };
+  
+  const handleRoomClick= (room) => {
+    const roomId = room._id
+    window.location.href = `/${roomId}`;
+  };
+  
+  function displayRooms(){
+    if (room.lenght === 0 && groupRoom.lenght === 0 ){
+      return <p> No chats available </p>
+    }
+    const renderedRooms = Object.keys(room).map((key) => (
+    <div key={key} onClick={() => handleRoomClick(room[key])}>
+      <p>{key}</p>
+    </div>
+    ));
+
+    return renderedRooms;
+  
+  };
+
+  console.log(room)
+
   return (
     <div>
       <div>
@@ -65,7 +108,7 @@ const Home = () => {
         />
         <ul>
           {foundUsers.map((user, index) => (
-            <li key={index}>
+            <li key={index} onClick={() => handleUserClick(user)}>
               <p>{user}</p>
             </li>
           ))}
@@ -73,10 +116,8 @@ const Home = () => {
       </div>
       <div>
         <h2>Home pageee</h2>
+        {displayRooms()}
 
-        {room.length === 0 && groupRoom.length === 0 && (
-          <p>No chats available.</p>
-        )}
       </div>
     </div>
   );
@@ -93,7 +134,10 @@ export default Home;
   };
   */
 
- 
+ //{room.length === 0 && groupRoom.length === 0 && (
+          //<p>No chats available.</p>
+        //)}
+
   //<div>
                 ///*
         //<ul>

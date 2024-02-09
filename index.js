@@ -59,6 +59,9 @@ app.use('/register', registerRouter)
 const loginRouter = require('./routes/login');
 app.use('/login', loginRouter)
 
+const roomRouter = require('./routes/room.js');
+app.use('/room', roomRouter)
+
 app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}`);
 });
