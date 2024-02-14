@@ -14,7 +14,6 @@ function sortRooms (clientUser, rooms, groupRooms){
     } else {
       recipientName = currentRoom.participants[0];
     }
-    console.log(recipientName)
 
     orderedRooms[recipientName] = currentRoom
   }

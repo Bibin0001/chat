@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react';
+import socket from '../components/socket.js';
 
 const Home = () => {
+
   const token = document.cookie.split('=')[1];
   const [room, setRooms] = useState([]);
   const [groupRoom, setGroupRooms] = useState([]);
@@ -8,6 +10,19 @@ const Home = () => {
   const [foundUsers, setFoundUsers] = useState([]);
 
   useEffect(() => {
+
+    console.log('Connecting to socket')
+
+    socket.connect();
+
+    return () => {
+      socket.disconnect();
+    }
+  }, [])
+
+  useEffect(() => {
+
+
     const fetchData = async () => {
       try {
         const response = await fetch('http://localhost:5000/', {
@@ -95,7 +110,6 @@ const Home = () => {
   
   };
 
-  console.log(room)
 
   return (
     <div>

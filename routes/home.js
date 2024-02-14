@@ -12,7 +12,6 @@ router.get('/', requireAuth, async (req, res) => {
 
   const room = await Room.find({participants: user.username})
 
-  //console.log(room);
   const formattedRooms = room.map(item => ({
     room: item.room,
     participants: item.participants.filter(participant => participant !== user.username) // Exclude the current user
@@ -28,10 +27,8 @@ router.get('/', requireAuth, async (req, res) => {
 });
 
 router.post('/search-users',  requireAuth, async (req, res) =>{
-  console.log('IN');
   //console.log(req)
   const searchUser = req.body.searchUser
-  console.log(searchUser);
   users = await User.find({ username: { $regex: `^${searchUser}` }})
   
   const usersUsernames = []

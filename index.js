@@ -2,13 +2,20 @@ const { createServer } = require('http');
 const cookieParser = require('cookie-parser')
 const express = require('express');
 const cors = require('cors');
-const app = express();
+const { Server } = require('socket.io');
 
-app.use(cors({ origin: 'http://localhost:3001', credentials: true }));
+const app = express();
+const server = createServer(app); 
+const Socket = require('./controllers/sockets.js')
+
+
+const io = Socket(server);
+
+app.use(cors({ origin: 'http://localhost:3001',  credentials: true }));
 app.use(express.json());
 app.use(cookieParser());
+
 const PORT = process.env.PORT || 5000;
-const server = createServer(app); 
 
 const { MongoClient, ServerApiVersion } = require('mongodb');
 const mongoose = require('mongoose');
@@ -39,11 +46,6 @@ async function run() {
 run().catch(console.dir);
 // Mongoose connection to DataBase
 mongoose.connect(uriDatabase)
-  .then((result) =>
-    server.listen(3000, ()  => {
-      console.log(`Server running at http://localhost:5000/`);
-    })
-  )
   .catch((err) => console.log(err));
 
 mongoose.set('strictQuery', false);
@@ -62,7 +64,9 @@ app.use('/login', loginRouter)
 const roomRouter = require('./routes/room.js');
 app.use('/room', roomRouter)
 
-app.listen(PORT, () => {
+server.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}`);
 });
 
+
+module.exports = server;
