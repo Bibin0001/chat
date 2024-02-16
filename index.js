@@ -6,10 +6,11 @@ const { Server } = require('socket.io');
 
 const app = express();
 const server = createServer(app); 
-const Socket = require('./controllers/sockets.js')
+const Socket = require('./controllers/socketClass')
 
+const io = new Socket(server);
+io.startSocket();
 
-const io = Socket(server);
 
 app.use(cors({ origin: 'http://localhost:3001',  credentials: true }));
 app.use(express.json());
@@ -69,4 +70,3 @@ server.listen(PORT, () => {
 });
 
 
-module.exports = server;

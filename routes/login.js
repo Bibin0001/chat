@@ -10,10 +10,10 @@ const { BaseUser }= require('../controllers/userClass')
 router.post('/', async (req, res) => {
   username = req.body.username
   password = req.body.password
-  const user = new BaseUser(username, password);
+  const user = new BaseUser(username);
 
   // Checks for the user if the credentials are right it gives out the user token
-  loginUser = await user.login();
+  loginUser = await user.login(password);
   if (loginUser){
     res.cookie("token", loginUser, { httpOnly: true });
     res.status(200).json({ success: true, message: 'Login successful', loginUser });

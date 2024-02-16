@@ -16,6 +16,23 @@ class RoomClass{
     return newRoom.id
   }
 
+  getMessages(room){
+    const orderedMessages = []
+
+    for (const messageIndex in room.messages){
+      const message = room.messages[messageIndex]
+
+      orderedMessages.push({
+        sender: message.sender,
+        content: message.content
+      })
+    }
+
+
+    return orderedMessages
+
+  }
+
 }
   
 module.exports = {

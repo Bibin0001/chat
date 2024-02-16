@@ -9,15 +9,30 @@ const Room = require('../models/room')
 
 
 
-router.get('/:roomId', async(req, res) => {
-
-  console.log('Inside the room ')
+router.get('/:roomId', requireAuth,async(req, res) => {
+  
   const roomId = req.params.roomId
 
-  const room = await Room.find({ id: roomId  })
-  console.log(room);
+  const room = await Room.findOne({ _id: roomId  })
+  // Get the client and the recipient
+  let clientUser = ''
+  let recipient = ''
 
-  console.log('INSIDE THE ROOM');
+  if (room.participants[0] === req.user.username){
+    clientUser = room.participants[0]
+    recipient = room.participants[1]
+  } else{
+    clientUser = room.participants[1]
+    recipient = room.participants[0]
+  }
+
+  // Orders the messages by which user has sent them  
+  const roomController = new RoomClass(clientUser, recipient);
+
+  const orderedMessages = roomController.getMessages(room)
+  console.log(orderedMessages)
+
+  res.status(200).json({ username: req.user.username, messages: orderedMessages})
 
 })
 
@@ -28,6 +43,7 @@ router.post('/check-or-create-room', requireAuth, async(req, res) => {
   const chatRoom = await Room.findOne({
     participants: { $all: [user, recipientUser] }
     });
+
   // If there is no room  its created and send to the front end
   if (chatRoom === null){
     const newRoom = new RoomClass(user, recipientUser);

@@ -7,7 +7,7 @@
   "scripts": {
     "start": "concurrently \"npm run index.js\" \"npm run client\"",
     "server": "nodemon index.js",
-    "client": "cd client && npm start"
+    "client": "cd client && npm start --port 3001"
   },
   "keywords": [],
   "author": "",

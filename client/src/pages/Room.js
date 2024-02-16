@@ -2,55 +2,93 @@ import React, { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import { Navigate } from 'react-router-dom';
 import socket from '../components/socket.js';
+import './room.css'
 
 const Room = () => {
-  const [roomMessages, setRoomMessages] = useState([]);
-
   const token = document.cookie.split('=')[1];
   const { roomId } = useParams();
-  const url = `localhost:3001/${roomId}`
+  let clientUser = ''
 
-  useEffect(() => {
+  const [roomMessages, setRoomMessages] = useState([]);
+  const [messageInput, setMessageInput] = useState('');
+  useEffect(() =>{
+    const fetchData = async() => {
+      const response = await fetch(`http://localhost:5000/room/${roomId}`, {
+            method: 'GET',
+            headers: {
+              'Authorization': `Bearer ${token}`,
+              'Content-Type': 'application/json',
+            },
+            credentials: 'include',
+          })
 
-    
-    // Connect to the room
-    socket.emit('joinRoom', roomId);
+      const data = await response.json()
+      console.log(data)
+      console.log(clientUser)
+      clientUser = data.username
 
-    // Listen for incoming messages in the room
-    socket.on('message', (message) => {
-      setRoomMessages((prevMessages) => [...prevMessages, message]);
-    });
+      if (!socket.connected) {
+          socket.connect();
+        }
+      if (!socket.hasListeners('joinRoom')) {
+        socket.on('connect', () => {
+          socket.emit('joinRoom', roomId, clientUser);
+        });
+      }
+      socket.on('newMessage', (message) => {
+        setRoomMessages(prevMessages => [...prevMessages, message]);
+      });
+    }
 
-    // Clean up event listener when component unmounts
+    fetchData()
     return () => {
-      socket.off('message');
+      socket.disconnect();
     };
-  }, [roomId]); // Re-run effect when roomId changes
 
-  const sendMessage = (message) => {
-    // Emit message to the server
-    socket.emit('sendMessage', { roomId, message });
-  };
+  }, []);
+
+  function displayMessages(){
+    if (roomMessages){
+      console.log('messages')
+    };
+  }
+  const handleSentMessage = (event) =>{
+    socket.emit('sendMessage', messageInput)
+    setMessageInput('')
+  }
+
+  function displayInput(){
+    const input = 
+      <>
+        <input
+          type="text"
+          className="message-input"
+          placeholder="Type your message..."
+          value={messageInput}
+          onChange={(e) => setMessageInput(e.target.value)}
+        />
+        <button className="send-button" onClick={handleSentMessage}>
+          Send
+        </button>
+      </>
+
+    return input
+  }
 
   return (
     <div>
-      <h1>Room: {roomId}</h1>
       <div>
-        {roomMessages.map((message, index) => (
-          <div key={index}>{message}</div>
-        ))}
+        {displayMessages()}
       </div>
-      <form onSubmit={(e) => {
-        e.preventDefault();
-        const message = e.target.elements.message.value;
-        sendMessage(message);
-        e.target.elements.message.value = ''; 
-      }}>
-        <input type="text" name="message" />
-        <button type="submit">Send</button>
-      </form>
+
+      <div className="input-container">
+        {displayInput()}
+      </div>
     </div>
-  );
+  )
+
 };
 
-export default Room;
+
+export default Room
+
