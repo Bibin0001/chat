@@ -7,8 +7,7 @@ import './room.css'
 const Room = () => {
   const token = document.cookie.split('=')[1];
   const { roomId } = useParams();
-  let clientUser = ''
-
+  const [clientUser, setClientUsername] = useState('')
   const [roomMessages, setRoomMessages] = useState([]);
   const [messageInput, setMessageInput] = useState('');
   useEffect(() =>{
@@ -23,9 +22,10 @@ const Room = () => {
           })
 
       const data = await response.json()
-      console.log(data)
-      console.log(clientUser)
-      clientUser = data.username
+      //clientUser = data.clientUsername
+      setClientUsername(data.clientUsername)
+      setRoomMessages(data.messages)
+
 
       if (!socket.connected) {
           socket.connect();
@@ -37,20 +37,36 @@ const Room = () => {
       }
       socket.on('newMessage', (message) => {
         setRoomMessages(prevMessages => [...prevMessages, message]);
+      return () => {
+            socket.disconnect();
+          };
+
+
       });
     }
-
     fetchData()
-    return () => {
-      socket.disconnect();
-    };
 
-  }, []);
+      }, []);
 
-  function displayMessages(){
-    if (roomMessages){
-      console.log('messages')
-    };
+
+  function displayMessages() {
+    console.log(clientUser)
+    if (roomMessages) {
+
+// Posle za laik4eta :P
+      return roomMessages.map((msg, index ) => (
+        
+
+        <div
+          key={index}
+          className={msg.sender === clientUser ? "my-message" : "other-user-message" }
+        >
+          <span>{msg.sender}: </span>
+          {msg.content}
+        </div>
+      ));
+        
+          }
   }
   const handleSentMessage = (event) =>{
     socket.emit('sendMessage', messageInput)

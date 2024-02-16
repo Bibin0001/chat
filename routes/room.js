@@ -15,24 +15,18 @@ router.get('/:roomId', requireAuth,async(req, res) => {
 
   const room = await Room.findOne({ _id: roomId  })
   // Get the client and the recipient
-  let clientUser = ''
-  let recipient = ''
+  const clientUser = req.user.username
+  const clientUserIndex = room.participants.indexOf(clientUser)
+  const recipient = clientUserIndex === 0 ? room.participants[1] : room.participants[0];
 
-  if (room.participants[0] === req.user.username){
-    clientUser = room.participants[0]
-    recipient = room.participants[1]
-  } else{
-    clientUser = room.participants[1]
-    recipient = room.participants[0]
-  }
 
   // Orders the messages by which user has sent them  
   const roomController = new RoomClass(clientUser, recipient);
 
-  const orderedMessages = roomController.getMessages(room)
-  console.log(orderedMessages)
+  const lastMessages = roomController.getMessages(room)
+  console.log(lastMessages)
 
-  res.status(200).json({ username: req.user.username, messages: orderedMessages})
+  res.status(200).json({ clientUsername: clientUser, messages: lastMessages})
 
 })
 

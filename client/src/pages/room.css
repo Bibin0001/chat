@@ -21,11 +21,15 @@
   align-self: flex-end;
   background-color: #007bff;
   color: #fff;
+  padding: 10px;
+  margin: 10px;
 }
 
 .other-user-message {
   align-self: flex-start;
   background-color: #f0f0f0;
+  padding: 0px;
+  margin: 0px;
 }
 
 .input-container {
