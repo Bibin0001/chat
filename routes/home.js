@@ -5,24 +5,31 @@ const requireAuth = require('../middleware/authMiddleware');
 const Room = require('../models/room');
 const GroupRoom = require('../models/groupRoom');
 const sortRooms = require('./sortRooms.js');
+const { RoomClass } = require('../controllers/roomClass.js')
 
 router.get('/', requireAuth, async (req, res) => {
   
-  const user = await User.findOne({ 'username': req.user.username} );
+  const user = req.user.username
 
-  const room = await Room.find({participants: user.username})
+  const rooms = await Room.find({ participants: { "$in" : [user]} }) 
+  //console.log(room)
 
-  const formattedRooms = room.map(item => ({
-    room: item.room,
-    participants: item.participants.filter(participant => participant !== user.username) // Exclude the current user
-  }));
+  const roomController= new RoomClass(user)
+  const sortedRooms = roomController.sortRoomsByLatestMessage(rooms)
+  console.log(sortedRooms)
+
 
   const groupRoom = await GroupRoom.find({ participants: user.username })
 
-  const rooms = sortRooms(user, room, groupRoom)
+  //const rooms = sortRooms(user, room, groupRoom)
+
+  //console.log(rooms)
+  //console.log(groupRoom)
 
 
-  res.status(200).json({ Room : rooms, groupRooms : groupRoom }); //users: usersUsernames
+
+  res.status(200).json({ rooms : sortedRooms }); //users: usersUsernames
+
 
 });
 

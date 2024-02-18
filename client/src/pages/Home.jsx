@@ -4,8 +4,7 @@ import socket from '../components/socket.js';
 const Home = () => {
 
   const token = document.cookie.split('=')[1];
-  const [room, setRooms] = useState([]);
-  const [groupRoom, setGroupRooms] = useState([]);
+  const [rooms, setRooms] = useState([]);
   const [searchUser, setSearchUser] = useState('');
   const [foundUsers, setFoundUsers] = useState([]);
 
@@ -35,8 +34,7 @@ const Home = () => {
         });
 
         const data = await response.json();
-        setRooms(data.Room || []);
-        setGroupRooms(data.groupRooms || []);
+        setRooms(data.rooms)
       } catch (error) {
         console.error('Error fetching data:', error);
       }
@@ -91,18 +89,18 @@ const Home = () => {
     
   };
   
-  const handleRoomClick= (room) => {
-    const roomId = room._id
+  const handleRoomClick= (roomId) => {
     window.location.href = `/${roomId}`;
   };
   
   function displayRooms(){
-    if (room.lenght === 0 && groupRoom.lenght === 0 ){
+    console.log(rooms)
+    if (rooms.lenght === 0){
       return <p> No chats available </p>
     }
-    const renderedRooms = Object.keys(room).map((key) => (
-    <div key={key} onClick={() => handleRoomClick(room[key])}>
-      <p>{key}</p>
+    const renderedRooms = rooms.map((room) => (
+    <div key={room.roomId} onClick={() => handleRoomClick(room.roomId)}>
+      <p>{room.recipient}</p>
     </div>
     ));
 

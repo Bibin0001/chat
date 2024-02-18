@@ -24,7 +24,8 @@ router.get('/:roomId', requireAuth,async(req, res) => {
   const roomController = new RoomClass(clientUser, recipient);
 
   const lastMessages = roomController.getMessages(room)
-  console.log(lastMessages)
+
+  //console.log(lastMessages)
 
   res.status(200).json({ clientUsername: clientUser, messages: lastMessages})
 
