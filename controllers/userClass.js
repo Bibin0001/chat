@@ -58,7 +58,6 @@ class UserMessaging extends BaseUser{
   }
 
   async sendMessage(message, roomId){
-    console.log(this.username)
     const newMessage = {
       sender: this.username,
       content: message
@@ -67,6 +66,8 @@ class UserMessaging extends BaseUser{
     const room = await Room.findById(roomId)
     room.messages.push(newMessage)
     room.save();
+
+    return newMessage
     
   }
 

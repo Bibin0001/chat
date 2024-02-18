@@ -51,14 +51,17 @@ class Socket{
 
   handleRooms(socket){
     socket.on('joinRoom', async (roomId, username) => {
+
       socket.join(roomId)
       const user = new UserMessaging(username)
       console.log('User connected to room')
 
-      socket.on('sendMessage', (msg) => {
-        user.sendMessage(msg, roomId)
-
+      socket.on('sendMessage', async (msg) => {
+        const messageObject = await user.sendMessage(msg, roomId)
+        socket.to(roomId).emit('newMessage', messageObject)
+        //socket.emit('newMessage', messageObject)
       })
+
     });
     
   }

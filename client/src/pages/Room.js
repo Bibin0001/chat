@@ -20,37 +20,30 @@ const Room = () => {
             },
             credentials: 'include',
           })
-
       const data = await response.json()
-      //clientUser = data.clientUsername
       setClientUsername(data.clientUsername)
       setRoomMessages(data.messages)
 
-
       if (!socket.connected) {
-          socket.connect();
-        }
-      if (!socket.hasListeners('joinRoom')) {
+        socket.connect()
         socket.on('connect', () => {
-          socket.emit('joinRoom', roomId, clientUser);
+          socket.emit('joinRoom', roomId, data.clientUsername);
+          socket.on('newMessage', (message) => {
+            setRoomMessages(prevMessages => [...prevMessages, message]);
+            });
         });
       }
-      socket.on('newMessage', (message) => {
-        setRoomMessages(prevMessages => [...prevMessages, message]);
       return () => {
-            socket.disconnect();
-          };
-
-
-      });
-    }
+        socket.disconnect();
+      };
+    };
     fetchData()
-
-      }, []);
+    
+  },[]);
 
 
   function displayMessages() {
-    console.log(clientUser)
+    console.log(roomMessages)
     if (roomMessages) {
 
 // Posle za laik4eta :P
@@ -69,6 +62,7 @@ const Room = () => {
           }
   }
   const handleSentMessage = (event) =>{
+    console.log(messageInput)
     socket.emit('sendMessage', messageInput)
     setMessageInput('')
   }

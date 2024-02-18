@@ -23,9 +23,8 @@ router.get('/:roomId', requireAuth,async(req, res) => {
   // Orders the messages by which user has sent them  
   const roomController = new RoomClass(clientUser, recipient);
 
-  const lastMessages = roomController.getMessages(room)
-
-  //console.log(lastMessages)
+  let lastMessages = roomController.getMessages(room)
+  lastMessages.sort((a, b) => (b.lastMessage) - (a.lastMessage));
 
   res.status(200).json({ clientUsername: clientUser, messages: lastMessages})
 

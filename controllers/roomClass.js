@@ -35,7 +35,7 @@ class RoomClass{
 
   sortRoomsByLatestMessage(rooms){
 
-    const sortedRooms = []
+    const roomsData = []
     for (const roomIndex in rooms){
 
       const room = rooms[roomIndex]
@@ -52,12 +52,18 @@ class RoomClass{
           roomId: room._id.toString()
         }
 
-        sortedRooms.push(roomData)
+        roomsData.push(roomData)
       }
     };
-    //console.log(sortedRooms)
-    return sortedRooms
 
+    const sortedRooms = roomsData.sort((a, b) => {
+      const dateA = a.lastMessage
+      const dateB = b.lastMessage
+
+      return dateB - dateA
+    });
+
+    return sortedRooms
 
   }
 
