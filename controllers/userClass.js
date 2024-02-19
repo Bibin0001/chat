@@ -2,6 +2,7 @@ const User = require('../models/user');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken')
 const Room = require('../models/room')
+require('dotenv').config();
 
 class BaseUser {
 
@@ -35,7 +36,7 @@ class BaseUser {
     if (currentUser && (bcrypt.compareSync(password, currentUser.password))) {
       const token = jwt.sign(
           {username: currentUser.username, time_created: currentUnixTime },
-          "verySecretKey",
+          process.env.SECRET_KEY,
           {
             expiresIn: "2h",
           })

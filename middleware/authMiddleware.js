@@ -1,5 +1,6 @@
 const User = require('../models/user');
 const jwt = require('jsonwebtoken');
+require('dotenv').config();
 
 const requireAuth = async (req, res, next) => {
 
@@ -7,7 +8,7 @@ const requireAuth = async (req, res, next) => {
   
 
   if (token) {
-    jwt.verify(token, 'verySecretKey', (err, decodedToken) => {
+    jwt.verify(token, process.env.SECRET_KEY, (err, decodedToken) => {
       if (err) {
         return res.status(401).json({ error: 'Invalid token' });
       } else {

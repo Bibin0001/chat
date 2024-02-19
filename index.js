@@ -3,6 +3,7 @@ const cookieParser = require('cookie-parser')
 const express = require('express');
 const cors = require('cors');
 const { Server } = require('socket.io');
+require('dotenv').config();
 
 const app = express();
 const server = createServer(app); 
@@ -12,7 +13,7 @@ const io = new Socket(server);
 io.startSocket();
 
 
-app.use(cors({ origin: 'http://localhost:3001',  credentials: true }));
+app.use(cors({ origin: 'http://localhost:3000',  credentials: true }));
 app.use(express.json());
 app.use(cookieParser());
 
@@ -21,7 +22,7 @@ const PORT = process.env.PORT || 5000;
 const { MongoClient, ServerApiVersion } = require('mongodb');
 const mongoose = require('mongoose');
 
-const uriDatabase= "mongodb+srv://bobster:Quip61JwlsNy6pV9@cluster0.9gq9kzd.mongodb.net/?retryWrites=true&w=majority";
+const uriDatabase = process.env.DB_URI;
 const requireAuth = require('./middleware/authMiddleware');
 
 // Database connection

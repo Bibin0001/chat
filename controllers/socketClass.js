@@ -27,7 +27,7 @@ class Socket{
   initializeSocket(){
     const io = new Server(this.server, {
         cors: {
-          origin: 'http://localhost:3001'
+          origin: 'http://localhost:3000'
         }
       });
     this.io = io
