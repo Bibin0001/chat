@@ -3,13 +3,16 @@ import { useParams } from 'react-router-dom';
 import { Navigate } from 'react-router-dom';
 import socket from '../components/socket.js';
 import './room.css'
+import Message from '../components/Message.js'
 
 const Room = () => {
   const token = document.cookie.split('=')[1];
   const { roomId } = useParams();
-  const [clientUser, setClientUsername] = useState('')
+  const [clientUser, setClientUsername] = useState('');
   const [roomMessages, setRoomMessages] = useState([]);
   const [messageInput, setMessageInput] = useState('');
+  const [selectedMessage, setSelectedMessage] = useState(null);
+
   useEffect(() =>{
     const fetchData = async() => {
       const response = await fetch(`http://localhost:5000/room/${roomId}`, {
@@ -41,31 +44,37 @@ const Room = () => {
     
   },[]);
 
+  
+  const handleEditMessage = (id, editedText) => {
+    setRoomMessages(prevMessages => {
+      const updatedMessages = [...prevMessages];
+      updatedMessages[id] = { ...updatedMessages[id], content: editedText };
+      return updatedMessages;
+    });
+};
+
 
   function displayMessages() {
-    console.log(roomMessages)
     if (roomMessages) {
+      return roomMessages.map((msg, index) => (
+        <Message
+          id={index}
+          text={msg.content}
+          sender={msg.sender}
+          isCurrentUser={msg.sender === clientUser}
+          onEdit={handleEditMessage}
 
-// Posle za laik4eta :P
-      return roomMessages.map((msg, index ) => (
-        
-
-        <div
-          key={index}
-          className={msg.sender === clientUser ? "my-message" : "other-user-message" }
-        >
-          <span>{msg.sender}: </span>
-          {msg.content}
-        </div>
+        />
       ));
-        
-          }
+    }
   }
+
   const handleSentMessage = (event) =>{
     console.log(messageInput)
     socket.emit('sendMessage', messageInput)
     setMessageInput('')
   }
+
 
   function displayInput(){
     const input = 
@@ -85,12 +94,12 @@ const Room = () => {
     return input
   }
 
+
   return (
     <div>
       <div>
         {displayMessages()}
       </div>
-
       <div className="input-container">
         {displayInput()}
       </div>
