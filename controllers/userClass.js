@@ -69,7 +69,19 @@ class UserMessaging extends BaseUser{
     room.save();
 
     return newMessage
-    
+  }
+
+  async editMessage(newMessage, oldMessage, roomId){
+
+    // There is updateOne in mongoose but for some reason doesnt work so i have to do this this way
+    // I wasted 6 hours trying to make it using updateOne 
+   
+    const room = await Room.findById(roomId)
+    const messageToUpdate = room.messages.find(messages => messages.content === oldMessage);
+    messageToUpdate.content = newMessage
+
+    await room.save()
+
   }
 
 }

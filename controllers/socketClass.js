@@ -59,7 +59,15 @@ class Socket{
       socket.on('sendMessage', async (msg) => {
         const messageObject = await user.sendMessage(msg, roomId)
         socket.to(roomId).emit('newMessage', messageObject)
-        //socket.emit('newMessage', messageObject)
+        socket.emit('newMessage', messageObject)
+      })
+
+      socket.on('editMessage', async(editedMessage, oldMessage, messageIdInReact) => {
+        console.log(editedMessage)
+        console.log(oldMessage)
+        const editMessage = await user.editMessage(editedMessage, oldMessage, roomId )
+        socket.to(roomId).emit('editedMessage', editedMessage, messageIdInReact)
+        socket.emit('editedMessage', editedMessage, messageIdInReact)
       })
 
     });

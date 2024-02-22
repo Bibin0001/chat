@@ -34,6 +34,15 @@ const Room = () => {
           socket.on('newMessage', (message) => {
             setRoomMessages(prevMessages => [...prevMessages, message]);
             });
+
+          socket.on('editedMessage', (newMessage, oldMessageId) =>{
+
+            setRoomMessages(prevMessages => {
+              const updatedMessages = [...prevMessages];
+              updatedMessages[oldMessageId] = { ...updatedMessages[oldMessageId], content: newMessage};
+              return updatedMessages;
+            })
+          })
         });
       }
       return () => {
@@ -45,12 +54,12 @@ const Room = () => {
   },[]);
 
   
-  const handleEditMessage = (id, editedText) => {
-    setRoomMessages(prevMessages => {
-      const updatedMessages = [...prevMessages];
-      updatedMessages[id] = { ...updatedMessages[id], content: editedText };
-      return updatedMessages;
-    });
+  const handleEditMessage = (id, editedMessage) => {
+    console.log(roomMessages)
+    const oldMessage = roomMessages[id]
+    console.log(oldMessage)
+    socket.emit('editMessage',editedMessage, oldMessage.content, id)
+
 };
 
 

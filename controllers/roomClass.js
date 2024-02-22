@@ -24,7 +24,7 @@ class RoomClass{
 
       orderedMessages.push({
         sender: message.sender,
-        content: message.content
+        content: message.content,
       })
     }
 
