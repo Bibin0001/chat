@@ -84,6 +84,15 @@ class UserMessaging extends BaseUser{
 
   }
 
+  async deleteMessage(deletedMessage, roomId){
+
+    const room = await Room.findById(roomId)
+    const indexToRemove = room.messages.findIndex(message => message.content === deletedMessage);
+    room.messages.splice(indexToRemove, 1); // Remove the message from the array
+    await room.save(); 
+
+  }
+
 }
 
   

@@ -70,6 +70,14 @@ class Socket{
         socket.emit('editedMessage', editedMessage, messageIdInReact)
       })
 
+      socket.on('deleteMessage', async(message , messageIdInReact) => {
+
+        const deleteMessage = await user.deleteMessage(message, roomId)
+        socket.to(roomId).emit('deletedMessage', messageIdInReact)
+        socket.emit('deletedMessage', messageIdInReact)
+
+      })
+
     });
     
   }

@@ -43,6 +43,12 @@ const Room = () => {
               return updatedMessages;
             })
           })
+          socket.on('deletedMessage', (deletedMessageId) =>{
+            setRoomMessages(prevMessages => {
+                  return prevMessages.filter((message, index) => index !== deletedMessageId);
+              });
+          })
+
         });
       }
       return () => {
@@ -54,14 +60,23 @@ const Room = () => {
   },[]);
 
   
-  const handleEditMessage = (id, editedMessage) => {
+  function handleEditMessage(id, editedMessage)  {
     console.log(roomMessages)
     const oldMessage = roomMessages[id]
     console.log(oldMessage)
     socket.emit('editMessage',editedMessage, oldMessage.content, id)
 
-};
+  };
 
+  function handleDeleteMessage(id, deletedMessage){
+    console.log(deletedMessage)
+
+    socket.emit('deleteMessage', deletedMessage, id)
+
+  }
+
+  
+  
 
   function displayMessages() {
     if (roomMessages) {
@@ -72,6 +87,7 @@ const Room = () => {
           sender={msg.sender}
           isCurrentUser={msg.sender === clientUser}
           onEdit={handleEditMessage}
+          onDelete={handleDeleteMessage}
 
         />
       ));

@@ -25,7 +25,6 @@ router.get('/:roomId', requireAuth,async(req, res) => {
 
   let lastMessages = roomController.getMessages(room)
   lastMessages.sort((a, b) => (b.lastMessage) - (a.lastMessage));
-  console.log(lastMessages)
 
   res.status(200).json({ clientUsername: clientUser, messages: lastMessages})
 

@@ -1,9 +1,10 @@
 import React, { useState } from 'react';
 
-const Message = ({ id, text, sender, isCurrentUser, onEdit }) => {
+const Message = ({ id, text, sender, isCurrentUser, onEdit, onDelete}) => {
   const [isHovered, setIsHovered] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
   const [editedText, setEditedText] = useState(text);
+  const [deletedText, setDeletedText] = useState(text)
 
   const handleMouseEnter = () => {
     setIsHovered(true);
@@ -24,7 +25,7 @@ const Message = ({ id, text, sender, isCurrentUser, onEdit }) => {
 
   const handleDelete = () => {
     // Implement delete functionality
-    console.log('Delete message:', text);
+    onDelete(id, deletedText )
   };
 
   const handleSaveEdit = () => {
