@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import socket from '../components/socket.js';
+import CreateGroupRoom from '../components/CreateGroupRoom'
 
 const Home = () => {
 
@@ -108,6 +109,12 @@ const Home = () => {
   
   };
 
+  const handleCreateRoom = (selectedUsers, roomName) => {
+    console.log('Creating room with selected users:', selectedUsers);
+    console.log('Room name:', roomName);
+    // Here you can implement logic to create the room
+  };
+
 
   return (
     <div>
@@ -126,6 +133,13 @@ const Home = () => {
           ))}
         </ul>
       </div>
+
+      <div>
+          <CreateGroupRoom onCreateRoom={handleCreateRoom} />
+
+        
+      </div>
+
       <div>
         <h2>Home pageee</h2>
         {displayRooms()}
@@ -137,32 +151,9 @@ const Home = () => {
 
 export default Home;
   
+        /*<CreateGroupRoom onCreateRoom={handleCreateRoom} />*/
 
-
-
-/* 
-  const handleUserClick = (user) => {
-    console.log('Selected user:', user);
-  };
-  */
-
- //{room.length === 0 && groupRoom.length === 0 && (
-          //<p>No chats available.</p>
-        //)}
-
-  //<div>
-                ///*
-        //<ul>
-          //{foundUsers.map((user, index) => {
-            //<li key={index} onClick={() => handleUserClick(user)}>
-              //{user}
-            //</li>
-
-
-          //})}
-        //</ul>
-        //*/
-
-      //</div>
-
-
+/*
+ *
+        </button>
+ * */

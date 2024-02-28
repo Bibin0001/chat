@@ -5,12 +5,11 @@ const bcrypt = require('bcryptjs');
 class RoomClass{
   constructor(clientUser, recipient = 'Meow'){
     this.clientUser = clientUser;
-    this.recipient= recipient;
 
   }
 
-  async createRoom(){
-    const newRoom = new Room({ participants: [this.clientUser, this.recipient] });
+  async createRoom(recipient){
+    const newRoom = new Room({ participants: [this.clientUser, recipient] });
     await newRoom.save();
 
     return newRoom.id
@@ -25,8 +24,11 @@ class RoomClass{
       orderedMessages.push({
         sender: message.sender,
         content: message.content,
+        roomId: room._id.toString()
       })
     }
+
+
 
     return orderedMessages
     
@@ -36,12 +38,12 @@ class RoomClass{
   sortRoomsByLatestMessage(rooms){
 
     const roomsData = []
+
     for (const roomIndex in rooms){
-
       const room = rooms[roomIndex]
-
       const clientUserIndex = room.participants.indexOf(this.clientUser)
       const recipient = clientUserIndex === 0 ? room.participants[1] : room.participants[0];
+
       if (room.messages.length > 0) {
         const lastMessageIndex = room.messages.length - 1
         const lastMessage = room.messages[lastMessageIndex]
@@ -66,6 +68,23 @@ class RoomClass{
     return sortedRooms
 
   }
+
+}
+
+class GroupRoom extends RoomClass{
+
+  constructor(clientUser){
+    super(clientUser);
+  }
+
+  async createGroupRoom(){
+
+    console.log(clientUser)
+  }
+
+
+
+
 
 }
   

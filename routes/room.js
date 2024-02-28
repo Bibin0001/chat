@@ -3,7 +3,6 @@ const router = express.Router();
 const User = require('../models/user');
 const { BaseUser } = require('../controllers/userClass')
 const { RoomClass } = require('../controllers/roomClass')
-const bcrypt = require('bcryptjs');
 const requireAuth = require('../middleware/authMiddleware');
 const Room = require('../models/room')
 
@@ -24,7 +23,6 @@ router.get('/:roomId', requireAuth,async(req, res) => {
   const roomController = new RoomClass(clientUser, recipient);
 
   let lastMessages = roomController.getMessages(room)
-  lastMessages.sort((a, b) => (b.lastMessage) - (a.lastMessage));
 
   res.status(200).json({ clientUsername: clientUser, messages: lastMessages})
 
@@ -40,8 +38,8 @@ router.post('/check-or-create-room', requireAuth, async(req, res) => {
 
   // If there is no room  its created and send to the front end
   if (chatRoom === null){
-    const newRoom = new RoomClass(user, recipientUser);
-    const newRoomId = await newRoom.createRoom();
+    const newRoom = new RoomClass(user);
+    const newRoomId = await newRoom.createRoom(recipientUser);
     if (newRoomId){
       res.status(201).json({ message: 'Chat created.', roomId: newRoomId  });
     }
