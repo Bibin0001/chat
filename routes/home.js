@@ -16,9 +16,10 @@ router.get('/', requireAuth, async (req, res) => {
   const roomController= new RoomClass(user)
   const sortedRooms = roomController.sortRoomsByLatestMessage(rooms)
 
-  const groupRoom = await GroupRoom.find({ participants: user.username })
+  const groupRoom = await GroupRoom.find({ participants: { "$in": [user]}})
 
-  res.status(200).json({ rooms : sortedRooms }); 
+  res.status(200).json({ rooms : sortedRooms, groupRooms : groupRoom }); 
+
 
 
 });

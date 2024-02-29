@@ -2,52 +2,39 @@ const express = require("express");
 const router = express.Router();
 const User = require('../models/user');
 const { BaseUser } = require('../controllers/userClass')
-const { GroupRoom } = require('../controllers/roomClass')
+const { GroupRoomClass } = require('../controllers/roomClass')
 const requireAuth = require('../middleware/authMiddleware');
-const GroupRoom = require('../models/groupRoom.js')
-
-
+const GroupRoom = require('../models/groupRoom')
 
 router.post('/create-group-room', requireAuth, async(req, res) => {
   const user = req.user.username
 
-  const groupRoom = new GroupRoom(user) 
+  const participants = req.body.participants
+  const roomName = req.body.roomName
+  const groupRoom = new GroupRoomClass(user) 
 
-  groupRoom.createGroupRoom()
-
-
-
-
-
+  const newGroupRoomId = await groupRoom.createGroupRoom(roomName, participants)
+  console.log(newGroupRoomId)
 
 
-
-
-  //res.status(200).json({ roomId: chatRoom.id });
-  
+  res.status(200).json({ roomId: newGroupRoomId });
 
 });
 
 
 
 router.get('/:groupRoomId', requireAuth,async(req, res) => {
+  const user = req.user.username
+  const groupRoomId = req.params.groupRoomId
+  console.log(groupRoomId)
+  const groupRoomObject = await GroupRoom.findOne({ _id: groupRoomId })
   
-  const roomId = req.params.groupRoomId
-
-  const groupRoom = await Room.findOne({ _id: roomId  })
-  // Get the client and the recipient
-  const clientUser = req.user.username
-  const clientUserIndex = room.participants.indexOf(clientUser)
-  const recipient = clientUserIndex === 0 ? room.participants[1] : room.participants[0];
+  const groupRoom = new GroupRoomClass(user);
 
 
-  // Orders the messages by which user has sent them  
-  const roomController = new RoomClass(clientUser, recipient);
+  let lastMessages = groupRoom.getMessages(groupRoomObject)
 
-  let lastMessages = roomController.getMessages(room)
-  lastMessages.sort((a, b) => (b.lastMessage) - (a.lastMessage));
-
-  res.status(200).json({ clientUsername: clientUser, messages: lastMessages})
+  res.status(200).json({ clientUsername: user,messages: lastMessages  })
 
 })
 

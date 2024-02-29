@@ -1,5 +1,3 @@
-// This is unrealistically so stupid but i dont have a more clever solution thatn that
-// This has to be fixed but i dont have much time right now! 
 
 
 function sortRooms (clientUser, rooms, groupRooms){

@@ -2,6 +2,7 @@ const User = require('../models/user');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken')
 const Room = require('../models/room')
+const GroupRoom = require('../models/groupRoom')
 require('dotenv').config();
 
 class BaseUser {
@@ -58,25 +59,37 @@ class UserMessaging extends BaseUser{
     super(username);
   }
 
-  async sendMessage(message, roomId){
+  async getRoom(roomId, groupRoom){
+    let room = ''
+
+    if (groupRoom){
+      room = await GroupRoom.findById(roomId)
+    } else{
+      room = await Room.findById(roomId)
+    }
+    return room
+  }
+
+  async sendMessage(message, roomId, groupRoom){
     const newMessage = {
       sender: this.username,
       content: message
     };
 
-    const room = await Room.findById(roomId)
+
+
+    const room = await this.getRoom(roomId, groupRoom)
     room.messages.push(newMessage)
     room.save();
 
     return newMessage
   }
 
-  async editMessage(newMessage, oldMessage, roomId){
+  async editMessage(newMessage, oldMessage, roomId, groupRoom){
+    const room = await this.getRoom(roomId, groupRoom)
 
     // There is updateOne in mongoose but for some reason doesnt work so i have to do this this way
     // I wasted 6 hours trying to make it using updateOne 
-   
-    const room = await Room.findById(roomId)
     const messageToUpdate = room.messages.find(messages => messages.content === oldMessage);
     messageToUpdate.content = newMessage
 
@@ -84,9 +97,9 @@ class UserMessaging extends BaseUser{
 
   }
 
-  async deleteMessage(deletedMessage, roomId){
+  async deleteMessage(deletedMessage, roomId, groupRoom){
+    const room = await this.getRoom(roomId, groupRoom)
 
-    const room = await Room.findById(roomId)
     const indexToRemove = room.messages.findIndex(message => message.content === deletedMessage);
     room.messages.splice(indexToRemove, 1); // Remove the message from the array
     await room.save(); 

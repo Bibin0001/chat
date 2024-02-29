@@ -11,23 +11,21 @@ const Room = require('../models/room')
 router.get('/:roomId', requireAuth,async(req, res) => {
   
   const roomId = req.params.roomId
-
   const room = await Room.findOne({ _id: roomId  })
   // Get the client and the recipient
   const clientUser = req.user.username
   const clientUserIndex = room.participants.indexOf(clientUser)
   const recipient = clientUserIndex === 0 ? room.participants[1] : room.participants[0];
 
-
   // Orders the messages by which user has sent them  
   const roomController = new RoomClass(clientUser, recipient);
 
   let lastMessages = roomController.getMessages(room)
+  console.log(lastMessages)
 
   res.status(200).json({ clientUsername: clientUser, messages: lastMessages})
 
 })
-
 
 router.post('/check-or-create-room', requireAuth, async(req, res) => {
   const user = req.user.username

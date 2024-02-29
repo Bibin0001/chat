@@ -4,8 +4,9 @@ import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import Home from './pages/Home';
 import Login from './pages/Login';
 import Register from './pages/Register';
-import PrivateRoute from './components/PrivateRoute.js'
-import Room from './pages/Room.js';
+import PrivateRoute from './components/PrivateRoute'
+import Room from './pages/Room';
+import GroupRoom from './pages/GroupRoom'
 import React, { useState, useEffect } from 'react';
 
 
@@ -22,7 +23,8 @@ function App() {
         <Route path='login/' element={<Login/>}> </Route>
         <Route path='register/' element={<Register/>}> </Route>
         <Route path='/' element={<HomeRoute/>}> </Route>
-        <Route path='/:roomId' element={<Room/>}> </Route>
+        <Route path='room/:roomId' element={<Room/>}> </Route>
+        <Route path='group-room/:groupRoomId' element={<GroupRoom/>}> </Route>
 
       </Routes>
     </BrowserRouter>

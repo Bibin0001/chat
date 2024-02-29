@@ -1,6 +1,8 @@
 const User = require('../models/user');
 const Room = require('../models/room')
 const bcrypt = require('bcryptjs');
+const GroupRoom = require('../models/groupRoom')
+
 
 class RoomClass{
   constructor(clientUser, recipient = 'Meow'){
@@ -71,16 +73,52 @@ class RoomClass{
 
 }
 
-class GroupRoom extends RoomClass{
+class GroupRoomClass extends RoomClass{
 
   constructor(clientUser){
     super(clientUser);
   }
 
-  async createGroupRoom(){
+  async createGroupRoom(groupName, participants){
+    participants.push(this.clientUser)
 
-    console.log(clientUser)
+    console.log(this.clientUser)
+    console.log(groupName)
+    console.log(participants)
+
+    const newGroupRoom = new GroupRoom({
+      admins: [this.clientUser], 
+      participants: participants,
+      name: groupName,
+      messages: [] 
+    });
+
+    newGroupRoom.save()
+
+    return newGroupRoom._id
+
   }
+
+  getMessages(room){
+    const orderedMessages = []
+
+    for (const messageIndex in room.messages){
+      const message = room.messages[messageIndex]
+
+      orderedMessages.push({
+        sender: message.sender,
+        content: message.content,
+        roomId: room._id.toString()
+      })
+    }
+
+
+
+    return orderedMessages
+    
+
+  }
+
 
 
 
@@ -90,4 +128,5 @@ class GroupRoom extends RoomClass{
   
 module.exports = {
   RoomClass,
+  GroupRoomClass
 };

@@ -66,28 +66,10 @@ app.use('/login', loginRouter)
 const roomRouter = require('./routes/room.js');
 app.use('/room', roomRouter)
 
+const groupRoomRouter = require('./routes/groupRoom.js')
+app.use('/group-room', groupRoomRouter)
+
 server.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}`);
 });
 
-/*
- *function displayMessages() {
-    console.log(roomMessages)
-    if (roomMessages) {
-
-// Posle za laik4eta :P
-      return roomMessages.map((msg, index ) => (
-        
-
-        <div
-          key={index}
-          className={msg.sender === clientUser ? "my-message" : "other-user-message" }
-        >
-          <span>{msg.sender}: </span>
-          {msg.content}
-        </div>
-      ));
-        
-          }
-  }
- * */

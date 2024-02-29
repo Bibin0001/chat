@@ -6,12 +6,12 @@ const Home = () => {
 
   const token = document.cookie.split('=')[1];
   const [rooms, setRooms] = useState([]);
+  const [groupRooms, setGroupRooms] = useState([]);
   const [searchUser, setSearchUser] = useState('');
   const [foundUsers, setFoundUsers] = useState([]);
 
   useEffect(() => {
 
-    console.log('Connecting to socket')
 
     socket.connect();
 
@@ -36,6 +36,7 @@ const Home = () => {
 
         const data = await response.json();
         setRooms(data.rooms)
+        setGroupRooms(data.groupRooms)
       } catch (error) {
         console.error('Error fetching data:', error);
       }
@@ -86,16 +87,15 @@ const Home = () => {
     const data = await response.json();
     const roomId = data.roomId;
 
-    window.location.href = `/${roomId}`;
+    window.location.href = `room/${roomId}`;
     
   };
   
   const handleRoomClick= (roomId) => {
-    window.location.href = `/${roomId}`;
+    window.location.href = `room/${roomId}`;
   };
   
   function displayRooms(){
-    console.log(rooms)
     if (rooms.lenght === 0){
       return <p> No chats available </p>
     }
@@ -109,10 +109,40 @@ const Home = () => {
   
   };
 
-  const handleCreateRoom = (selectedUsers, roomName) => {
-    console.log('Creating room with selected users:', selectedUsers);
-    console.log('Room name:', roomName);
-    // Here you can implement logic to create the room
+  const handleGroupRoomClick = (groupRoomId) => {
+    window.location.href = `group-room/${groupRoomId}`
+  };
+
+  function displayGroupRooms(){
+    if (groupRooms.lenght === 0 ){
+      return <p> No group chats available </p>
+    }
+
+    const renderedRooms = groupRooms.map((groupRoom) => (
+      <div key={groupRoom._id} onClick={() => handleGroupRoomClick(groupRoom._id)}>
+        <p>{groupRoom.name}</p>
+
+      </div>
+    ));
+
+    return renderedRooms
+
+  }
+
+  const handleCreateRoom = async (selectedUsers, roomName) => {
+    const response = await fetch('http://localhost:5000/group-room/create-group-room', {
+      method: 'POST',
+      headers: {
+        'Authorization': `Bearer ${token}`,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        participants: selectedUsers,
+        roomName: roomName,
+      }),
+        credentials: 'include',
+      });
+
   };
 
 
@@ -135,13 +165,20 @@ const Home = () => {
       </div>
 
       <div>
-          <CreateGroupRoom onCreateRoom={handleCreateRoom} />
+        <CreateGroupRoom onCreateRoom={handleCreateRoom} />
 
         
       </div>
 
       <div>
+        <h2>Group Chats</h2>
+        {displayGroupRooms()}
+
+      </div>
+
+      <div>
         <h2>Home pageee</h2>
+        <h2>Direct Messages</h2>
         {displayRooms()}
 
       </div>
@@ -153,7 +190,3 @@ export default Home;
   
         /*<CreateGroupRoom onCreateRoom={handleCreateRoom} />*/
 
-/*
- *
-        </button>
- * */
