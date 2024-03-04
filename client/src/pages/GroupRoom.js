@@ -4,6 +4,7 @@ import { Navigate } from 'react-router-dom';
 import socket from '../components/socket.js';
 import './room.css'
 import Message from '../components/Message.js'
+import UserList from '../components/showUsers'
 
 const GroupRoom = () => {
   const token = document.cookie.split('=')[1];
@@ -12,6 +13,8 @@ const GroupRoom = () => {
   const [roomMessages, setRoomMessages] = useState([]);
   const [messageInput, setMessageInput] = useState('');
   const [selectedMessage, setSelectedMessage] = useState(null);
+  const [participants, setParticipants] = useState([]);
+  const [isAdmin, setIsAdmin] = useState(false);
 
   useEffect(() =>{
     const fetchData = async() => {
@@ -28,6 +31,8 @@ const GroupRoom = () => {
       const data = await response.json()
       setClientUsername(data.clientUsername)
       setRoomMessages(data.messages)
+      setParticipants(data.participants)
+      setIsAdmin(data.isAdmin)
 
       if (!socket.connected) {
         socket.connect()
@@ -49,6 +54,10 @@ const GroupRoom = () => {
             setRoomMessages(prevMessages => {
                   return prevMessages.filter((message, index) => index !== deletedMessageId);
               });
+          })
+
+          socket.on('kickedUser', (username) => {
+            setParticipants(prevParticipants => prevParticipants.filter(user => user !== username));
           })
 
         });
@@ -121,9 +130,33 @@ const GroupRoom = () => {
     return input
   }
 
+  const handleKickedUser = (username) => {
+    socket.emit('kickUser', username);
+
+    if (username === clientUser){
+
+      window.location.href = '/';
+    }
+  }
+
+  const handleLeaving = () => {
+    socket.emit('kickUser', clientUser);
+    window.location.href = '/';
+  }
+
 
   return (
     <div>
+
+      <div className="users-container">
+        <UserList
+          users={participants}
+          isAdmin={isAdmin}
+          onKick={handleKickedUser} 
+          onLeave={handleLeaving}
+        />
+      </div>
+
       <div>
         {displayMessages()}
       </div>

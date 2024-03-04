@@ -1,0 +1,12 @@
+.user-list {
+  list-style: none;
+}
+
+.admin-functionalities {
+  display: none;
+}
+
+li:hover .admin-functionalities {
+  display: block;
+}
+

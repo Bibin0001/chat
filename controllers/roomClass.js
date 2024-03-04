@@ -82,12 +82,9 @@ class GroupRoomClass extends RoomClass{
   async createGroupRoom(groupName, participants){
     participants.push(this.clientUser)
 
-    console.log(this.clientUser)
-    console.log(groupName)
-    console.log(participants)
 
     const newGroupRoom = new GroupRoom({
-      admins: [this.clientUser], 
+      admins: [this.clientUser],
       participants: participants,
       name: groupName,
       messages: [] 
@@ -112,17 +109,49 @@ class GroupRoomClass extends RoomClass{
       })
     }
 
-
-
     return orderedMessages
-    
 
   }
 
+  sortRoomsByLatestMessage(rooms){
 
+    const roomsData = []
 
+    for (const roomIndex in rooms){
+      const room = rooms[roomIndex]
 
+      if (room.messages.length > 0) {
+        const lastMessageIndex = room.messages.length - 1
+        const lastMessage = room.messages[lastMessageIndex]
 
+        const roomData = {
+          lastMessage: lastMessage.timestamp,
+          roomName: room.name,
+          roomId: room._id.toString()
+        }
+
+        roomsData.push(roomData)
+      } else{
+        const roomData = {
+          lastMessage: 0,
+          roomName: room.name,
+          roomId: room._id.toString()
+        }
+        roomsData.push(roomData)
+      }
+
+    };
+
+    const sortedRooms = roomsData.sort((a, b) => {
+      const dateA = a.lastMessage
+      const dateB = b.lastMessage
+
+      return dateB - dateA
+    });
+
+    return sortedRooms
+
+  }
 
 }
   

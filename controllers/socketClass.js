@@ -1,10 +1,11 @@
 const server = require('../index');
 const { Server }= require('socket.io'); 
 const User = require('../models/user');
-const { UserMessaging } = require('../controllers/userClass')
+const { UserMessaging } = require('./userClass')
 const Room = require('../models/room')
 const cors = require('cors');
 
+const { UserGroupRoomActions } = require('./userClass')
 
 class Socket{
 
@@ -63,18 +64,22 @@ class Socket{
       })
 
       socket.on('editMessage', async(editedMessage, oldMessage, messageIdInReact) => {
-        console.log(editedMessage)
-        console.log(oldMessage)
         const editMessage = await user.editMessage(editedMessage, oldMessage, roomId, groupRoom)
         socket.to(roomId).emit('editedMessage', editedMessage, messageIdInReact)
         socket.emit('editedMessage', editedMessage, messageIdInReact)
       })
 
       socket.on('deleteMessage', async(message , messageIdInReact) => {
-
         const deleteMessage = await user.deleteMessage(message, roomId, groupRoom)
         socket.to(roomId).emit('deletedMessage', messageIdInReact)
         socket.emit('deletedMessage', messageIdInReact)
+
+      })
+      socket.on('kickUser', async(userToKick) =>{
+        const currentUser = new UserGroupRoomActions(username)
+        await currentUser.kickUser(userToKick, roomId)
+        socket.to(roomId).emit('kickedUser', userToKick)
+        socket.emit('kickedUser', userToKick)
 
       })
 

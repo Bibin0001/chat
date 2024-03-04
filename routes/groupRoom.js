@@ -26,15 +26,13 @@ router.post('/create-group-room', requireAuth, async(req, res) => {
 router.get('/:groupRoomId', requireAuth,async(req, res) => {
   const user = req.user.username
   const groupRoomId = req.params.groupRoomId
-  console.log(groupRoomId)
+
   const groupRoomObject = await GroupRoom.findOne({ _id: groupRoomId })
-  
   const groupRoom = new GroupRoomClass(user);
-
-
   let lastMessages = groupRoom.getMessages(groupRoomObject)
+  const isAdmin = groupRoomObject.admins.includes(user);
 
-  res.status(200).json({ clientUsername: user,messages: lastMessages  })
+  res.status(200).json({ clientUsername: user, messages: lastMessages, participants: groupRoomObject.participants, isAdmin: isAdmin})
 
 })
 

@@ -89,7 +89,6 @@ class UserMessaging extends BaseUser{
     const room = await this.getRoom(roomId, groupRoom)
 
     // There is updateOne in mongoose but for some reason doesnt work so i have to do this this way
-    // I wasted 6 hours trying to make it using updateOne 
     const messageToUpdate = room.messages.find(messages => messages.content === oldMessage);
     messageToUpdate.content = newMessage
 
@@ -101,15 +100,29 @@ class UserMessaging extends BaseUser{
     const room = await this.getRoom(roomId, groupRoom)
 
     const indexToRemove = room.messages.findIndex(message => message.content === deletedMessage);
-    room.messages.splice(indexToRemove, 1); // Remove the message from the array
+    room.messages.splice(indexToRemove, 1); 
     await room.save(); 
 
   }
 
 }
 
+class UserGroupRoomActions extends UserMessaging{
+  constructor(username){
+    super(username);
+  }
+
+  async kickUser(userToRemove, roomId){
+    const room = await this.getRoom(roomId, true)
+    room.participants.pull(userToRemove);
+    await room.save()
+
+  }
+}
+
   
 module.exports = {
   BaseUser,
   UserMessaging,
+  UserGroupRoomActions,
 };

@@ -6,26 +6,28 @@ const Room = require('../models/room');
 const GroupRoom = require('../models/groupRoom');
 const sortRooms = require('./sortRooms.js');
 const { RoomClass } = require('../controllers/roomClass.js')
+const { GroupRoomClass } = require('../controllers/roomClass.js')
 
 router.get('/', requireAuth, async (req, res) => {
   
   const user = req.user.username
-
   const rooms = await Room.find({ participants: { "$in" : [user]} }) 
 
   const roomController= new RoomClass(user)
   const sortedRooms = roomController.sortRoomsByLatestMessage(rooms)
 
-  const groupRoom = await GroupRoom.find({ participants: { "$in": [user]}})
+  const groupRooms = await GroupRoom.find({ participants: { "$in": [user]}})
 
-  res.status(200).json({ rooms : sortedRooms, groupRooms : groupRoom }); 
+  const groupRoomController = new GroupRoomClass(user)
+  const sortedGroupRooms = groupRoomController.sortRoomsByLatestMessage(groupRooms)
+  console.log(sortedGroupRooms)
 
-
+  res.status(200).json({ rooms : sortedRooms, groupRooms : sortedGroupRooms }); 
 
 });
 
 router.post('/search-users',  requireAuth, async (req, res) =>{
-  //console.log(req)
+
   const searchUser = req.body.searchUser
   users = await User.find({ username: { $regex: `^${searchUser}` }})
   
@@ -36,7 +38,6 @@ router.post('/search-users',  requireAuth, async (req, res) =>{
     }
   
   res.status(200).json({users: usersUsernames})
-
 
 });
 

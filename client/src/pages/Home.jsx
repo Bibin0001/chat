@@ -119,8 +119,8 @@ const Home = () => {
     }
 
     const renderedRooms = groupRooms.map((groupRoom) => (
-      <div key={groupRoom._id} onClick={() => handleGroupRoomClick(groupRoom._id)}>
-        <p>{groupRoom.name}</p>
+      <div key={groupRoom.roomId} onClick={() => handleGroupRoomClick(groupRoom.roomId)}>
+        <p>{groupRoom.roomName}</p>
 
       </div>
     ));
@@ -129,7 +129,7 @@ const Home = () => {
 
   }
 
-  const handleCreateRoom = async (selectedUsers, roomName) => {
+  const handleCreateGroupRoom = async (selectedUsers, roomName) => {
     const response = await fetch('http://localhost:5000/group-room/create-group-room', {
       method: 'POST',
       headers: {
@@ -142,6 +142,10 @@ const Home = () => {
       }),
         credentials: 'include',
       });
+
+    const data = await response.json();
+    const groupRoomId = data.roomId
+    window.location.href = `group-room/${groupRoomId}`
 
   };
 
@@ -165,8 +169,7 @@ const Home = () => {
       </div>
 
       <div>
-        <CreateGroupRoom onCreateRoom={handleCreateRoom} />
-
+        <CreateGroupRoom onCreateRoom={handleCreateGroupRoom} />
         
       </div>
 
