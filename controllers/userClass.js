@@ -118,6 +118,28 @@ class UserGroupRoomActions extends UserMessaging{
     await room.save()
 
   }
+
+  async addUsers(usersToAdd, roomId){
+    if(usersToAdd.includes(this.user)) {
+      const userIndex = usersToAdd.indexOf(this.user);
+      delete usersToAdd[userIndex]
+    };
+
+    const room = await this.getRoom(roomId, true)
+
+    for (const userIndex in usersToAdd){
+      const userToAdd = usersToAdd[userIndex]
+      if ( !(room.participants.includes(usersToAdd)) ){
+        room.participants.push(userToAdd);
+      }
+    }
+
+    await room.save()
+
+    return room.participants
+
+    
+  }
 }
 
   

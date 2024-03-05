@@ -1,10 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import { Navigate } from 'react-router-dom';
-import socket from '../components/socket.js';
+import socket from '../components/socket';
 import './room.css'
-import Message from '../components/Message.js'
+import Message from '../components/Message'
 import UserList from '../components/showUsers'
+import AddUserForm from '../components/AddUsers'
 
 const GroupRoom = () => {
   const token = document.cookie.split('=')[1];
@@ -58,6 +59,10 @@ const GroupRoom = () => {
 
           socket.on('kickedUser', (username) => {
             setParticipants(prevParticipants => prevParticipants.filter(user => user !== username));
+          })
+
+          socket.on('addedUser', (newUsers) => {
+            setParticipants(newUsers)
           })
 
         });
@@ -144,9 +149,17 @@ const GroupRoom = () => {
     window.location.href = '/';
   }
 
+  const handleAddUsers = (users) => {
+    socket.emit('addUsers', users)
+    //console.log(`Added users ${users}`)
+  }
+
 
   return (
     <div>
+      <div>
+      <AddUserForm onAddUsers={handleAddUsers} token={token} />
+      </div>
 
       <div className="users-container">
         <UserList
