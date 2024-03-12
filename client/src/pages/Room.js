@@ -4,14 +4,18 @@ import { Navigate } from 'react-router-dom';
 import socket from '../components/socket.js';
 import './room.css'
 import Message from '../components/Message.js'
+import { Encrypt, Decrypt  } from '../context/Encryption.js'
 
 const Room = () => {
   const token = document.cookie.split('=')[1];
   const { roomId } = useParams();
   const [clientUser, setClientUsername] = useState('');
   const [roomMessages, setRoomMessages] = useState([]);
+  const [encryptedMessages, setEncryptedMessages] = useState([]);
   const [messageInput, setMessageInput] = useState('');
   const [selectedMessage, setSelectedMessage] = useState(null);
+  const [key, setKey] = useState('');
+  const [iv , setIv] = useState('');
 
   useEffect(() =>{
     const fetchData = async() => {
@@ -25,21 +29,46 @@ const Room = () => {
           })
       const data = await response.json()
       setClientUsername(data.clientUsername)
-      setRoomMessages(data.messages)
+      const encryptedMessages = (data.messages)
+      const decryptedMessages = []
+      setEncryptedMessages(encryptedMessages)
+      for (const messageIndex in encryptedMessages){
+        const messageObject = encryptedMessages[messageIndex]
+        const encryptedMessage = encryptedMessages[messageIndex].content
+        const decryptedMessage = Decrypt (encryptedMessage, data.key, data.iv)
+        const obj = {
+          sender: messageObject.sender,
+          content: decryptedMessage,
+        }
+
+        decryptedMessages.push(obj)
+
+      }
+      setRoomMessages(decryptedMessages)
+
+      setKey(data.key)
+      setIv(data.iv)
 
       if (!socket.connected) {
         socket.connect()
         socket.on('connect', () => {
           socket.emit('joinRoom', roomId, data.clientUsername);
-          socket.on('newMessage', (message) => {
-            setRoomMessages(prevMessages => [...prevMessages, message]);
+          socket.on('newMessage', (encryptedMessage) => {
+            encryptedMessages.push(encryptedMessage)
+            const decryptedMessage = {
+              sender: encryptedMessage.sender,
+              content: Decrypt (encryptedMessage.content , data.key, data.iv),
+            }
+
+            setRoomMessages(prevMessages => [...prevMessages, decryptedMessage]);
             });
 
           socket.on('editedMessage', (newMessage, oldMessageId) =>{
+            const decryptedNewMessage = Decrypt (newMessage, data.key, data.iv)
 
             setRoomMessages(prevMessages => {
               const updatedMessages = [...prevMessages];
-              updatedMessages[oldMessageId] = { ...updatedMessages[oldMessageId], content: newMessage};
+              updatedMessages[oldMessageId] = { ...updatedMessages[oldMessageId], content: decryptedNewMessage};
               return updatedMessages;
             })
           })
@@ -61,10 +90,10 @@ const Room = () => {
 
   
   function handleEditMessage(id, editedMessage)  {
-    console.log(roomMessages)
-    const oldMessage = roomMessages[id]
-    console.log(oldMessage)
-    socket.emit('editMessage',editedMessage, oldMessage.content, id)
+    const oldMessage = encryptedMessages[id - 1].content
+    const encryptedNewMessage = Encrypt(editedMessage, key, iv) 
+
+    socket.emit('editMessage', encryptedNewMessage, oldMessage, id)
 
   };
 
@@ -75,11 +104,9 @@ const Room = () => {
 
   }
 
-  
-  
-
   function displayMessages() {
     if (roomMessages) {
+
       return roomMessages.map((msg, index) => (
         <Message
           id={index}
@@ -92,11 +119,18 @@ const Room = () => {
         />
       ));
     }
+    
   }
 
   const handleSentMessage = (event) =>{
-    console.log(messageInput)
-    socket.emit('sendMessage', messageInput)
+    const encryptedMessage = Encrypt(messageInput, key, iv)
+    const encryptedMessageObj = {
+      sender: clientUser,
+      content: encryptedMessage,
+    }
+    encryptedMessages.push(encryptedMessage)
+    socket.emit('sendMessage', encryptedMessage)
+
     setMessageInput('')
   }
 

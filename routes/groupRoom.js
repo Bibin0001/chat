@@ -5,6 +5,7 @@ const { BaseUser } = require('../controllers/userClass')
 const { GroupRoomClass } = require('../controllers/roomClass')
 const requireAuth = require('../middleware/authMiddleware');
 const GroupRoom = require('../models/groupRoom')
+const { getKey } = require('../middleware/getKey')
 
 router.post('/create-group-room', requireAuth, async(req, res) => {
   const user = req.user.username
@@ -32,7 +33,13 @@ router.get('/:groupRoomId', requireAuth,async(req, res) => {
   let lastMessages = groupRoom.getMessages(groupRoomObject)
   const isAdmin = groupRoomObject.admins.includes(user);
 
-  res.status(200).json({ clientUsername: user, messages: lastMessages, participants: groupRoomObject.participants, isAdmin: isAdmin})
+  const keyAndIv = await getKey(groupRoomId)
+
+  const key = keyAndIv[0];
+  const iv = keyAndIv[1];
+
+
+  res.status(200).json({ clientUsername: user, messages: lastMessages, participants: groupRoomObject.participants, isAdmin: isAdmin, key: key, iv: iv})
 
 })
 

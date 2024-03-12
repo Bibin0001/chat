@@ -6,16 +6,20 @@ import './room.css'
 import Message from '../components/Message'
 import UserList from '../components/showUsers'
 import AddUserForm from '../components/AddUsers'
+import { Encrypt, Decrypt  } from '../context/Encryption.js'
 
 const GroupRoom = () => {
   const token = document.cookie.split('=')[1];
   const { groupRoomId } = useParams();
   const [clientUser, setClientUsername] = useState('');
   const [roomMessages, setRoomMessages] = useState([]);
+  const [encryptedMessages, setEncryptedMessages] = useState([]);
   const [messageInput, setMessageInput] = useState('');
   const [selectedMessage, setSelectedMessage] = useState(null);
   const [participants, setParticipants] = useState([]);
   const [isAdmin, setIsAdmin] = useState(false);
+  const [key, setKey] = useState('');
+  const [iv , setIv] = useState('');
 
   useEffect(() =>{
     const fetchData = async() => {
@@ -34,20 +38,48 @@ const GroupRoom = () => {
       setRoomMessages(data.messages)
       setParticipants(data.participants)
       setIsAdmin(data.isAdmin)
+      const encryptedMessages = (data.messages)
+      const decryptedMessages = []
+      setEncryptedMessages(encryptedMessages)
+      for (const messageIndex in encryptedMessages){
+        const messageObject = encryptedMessages[messageIndex]
+        const encryptedMessage = encryptedMessages[messageIndex].content
+        const decryptedMessage = Decrypt (encryptedMessage, data.key, data.iv)
+        const obj = {
+          sender: messageObject.sender,
+          content: decryptedMessage,
+        }
+
+        decryptedMessages.push(obj)
+
+      }
+      setRoomMessages(decryptedMessages)
+
+      setKey(data.key)
+      setIv(data.iv)
+
+
 
       if (!socket.connected) {
         socket.connect()
         socket.on('connect', () => {
           socket.emit('joinRoom', groupRoomId, data.clientUsername, true);
-          socket.on('newMessage', (message) => {
-            setRoomMessages(prevMessages => [...prevMessages, message]);
+
+          socket.on('newMessage', (encryptedMessage) => {
+            encryptedMessages.push(encryptedMessage)
+            const decryptedMessage = {
+              sender: encryptedMessage.sender,
+              content: Decrypt (encryptedMessage.content , data.key, data.iv),
+            }
+
+            setRoomMessages(prevMessages => [...prevMessages, decryptedMessage]);
             });
 
           socket.on('editedMessage', (newMessage, oldMessageId) =>{
-
+            const decryptedNewMessage = Decrypt (newMessage, data.key, data.iv)
             setRoomMessages(prevMessages => {
               const updatedMessages = [...prevMessages];
-              updatedMessages[oldMessageId] = { ...updatedMessages[oldMessageId], content: newMessage};
+              updatedMessages[oldMessageId] = { ...updatedMessages[oldMessageId], content: decryptedNewMessage};
               return updatedMessages;
             })
           })
@@ -77,11 +109,10 @@ const GroupRoom = () => {
 
   
   function handleEditMessage(id, editedMessage)  {
-    console.log(roomMessages)
-    const oldMessage = roomMessages[id]
-    console.log(oldMessage)
-    socket.emit('editMessage',editedMessage, oldMessage.content, id)
+    const oldMessage = encryptedMessages[id - 1].content
+    const encryptedNewMessage = Encrypt(editedMessage, key, iv) 
 
+    socket.emit('editMessage', encryptedNewMessage, oldMessage, id)
   };
 
   function handleDeleteMessage(id, deletedMessage){
@@ -101,8 +132,7 @@ const GroupRoom = () => {
           id={index}
           text={msg.content}
           sender={msg.sender}
-          isCurrentUser={msg.sender === clientUser}
-          onEdit={handleEditMessage}
+          isCurrentUser={msg.sender === clientUser} onEdit={handleEditMessage}
           onDelete={handleDeleteMessage}
 
         />
@@ -111,8 +141,9 @@ const GroupRoom = () => {
   }
 
   const handleSentMessage = (event) =>{
-    console.log(messageInput)
-    socket.emit('sendMessage', messageInput)
+    const encryptedMessage = Encrypt(messageInput, key, iv)
+
+    socket.emit('sendMessage', encryptedMessage)
     setMessageInput('')
   }
 

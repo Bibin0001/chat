@@ -5,8 +5,8 @@ const { BaseUser } = require('../controllers/userClass')
 const { RoomClass } = require('../controllers/roomClass')
 const requireAuth = require('../middleware/authMiddleware');
 const Room = require('../models/room')
-
-
+require('dotenv').config();
+const { getKey } = require('../middleware/getKey')
 
 router.get('/:roomId', requireAuth,async(req, res) => {
   
@@ -21,9 +21,15 @@ router.get('/:roomId', requireAuth,async(req, res) => {
   const roomController = new RoomClass(clientUser, recipient);
 
   let lastMessages = roomController.getMessages(room)
+
+  const keyAndIv = await getKey(roomId)
+
+  const key = keyAndIv[0];
+  const iv = keyAndIv[1];
+
   console.log(lastMessages)
 
-  res.status(200).json({ clientUsername: clientUser, messages: lastMessages})
+  res.status(200).json({ clientUsername: clientUser, messages: lastMessages, key: key, iv: iv})
 
 })
 

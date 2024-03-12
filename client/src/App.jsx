@@ -9,7 +9,6 @@ import Room from './pages/Room';
 import GroupRoom from './pages/GroupRoom'
 import React, { useState, useEffect } from 'react';
 
-
 function App() {
   const [token, setToken] = useState(document.cookie.split('=')[1]);
   const HomeRoute = () => {

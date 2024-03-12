@@ -3,6 +3,11 @@ const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken')
 const Room = require('../models/room')
 const GroupRoom = require('../models/groupRoom')
+const crypto = require('crypto');
+const fs = require('fs')
+const path = require('path')
+
+
 require('dotenv').config();
 
 class BaseUser {
@@ -10,6 +15,7 @@ class BaseUser {
   constructor(username){
     this.username = username;
   }
+
 
   async register(password){
     const existingUser = await User.findOne({ username: this.username});
@@ -87,8 +93,8 @@ class UserMessaging extends BaseUser{
 
   async editMessage(newMessage, oldMessage, roomId, groupRoom){
     const room = await this.getRoom(roomId, groupRoom)
+    console.log(oldMessage)
 
-    // There is updateOne in mongoose but for some reason doesnt work so i have to do this this way
     const messageToUpdate = room.messages.find(messages => messages.content === oldMessage);
     messageToUpdate.content = newMessage
 
