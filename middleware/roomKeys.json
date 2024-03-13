@@ -1,29 +1,5 @@
 {
   "roomKeys": [
-    {
-      "roomId": "65f1af57404959ea943ce9b0",
-      "key": "a5240b4c0f428a24700f27664f0b5602",
-      "iv": "cbf8bd0d3b0018af533df9c99260aaa5"
-    },
-    {
-      "roomId": "65f1d97650fd8e1c68be58ec",
-      "key": "acd19fe48fb8f8b9cf6ed8cf22169a99",
-      "iv": "3b6064c2da6c2e2a4a5a40c53613ff1e"
-    },
-    {
-      "roomId": "65f1f50d8a709d96bef890bb",
-      "key": "fae94da754879b4f52dd6f9565394fae",
-      "iv": "e23a410f7d89a5e0caaf0955b472f41c"
-    },
-    {
-      "roomId": "65f1f94b7662009dfff1e3e0",
-      "key": "c991e5055e5d0931271afb4d94f8c05b",
-      "iv": "bb58d881ddee5cf98229a42734e5969b"
-    },
-    {
-      "roomId": "65f1fb8db404d85fb9b2d6f9",
-      "key": "dbac389511d85fa849864fda9388b4e5",
-      "iv": "45818bc07141cefb01886fd834f3b227"
-    }
+
   ]
 }
