@@ -2,7 +2,8 @@ import React, { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import { Navigate } from 'react-router-dom';
 import socket from '../components/socket.js';
-import './room.css'
+import '../styles/room.css'
+import '../styles/input.css'
 import Message from '../components/Message.js'
 import { Encrypt, Decrypt  } from '../context/Encryption.js'
 
@@ -90,7 +91,14 @@ const Room = () => {
 
   
   function handleEditMessage(id, editedMessage)  {
-    const oldMessage = encryptedMessages[id - 1].content
+    let oldMessage = ''
+    if (encryptedMessages[id - 1] == undefined){
+      oldMessage = encryptedMessages[id].content
+
+    } else{
+      oldMessage = encryptedMessages[id - 1].content
+    }
+
     const encryptedNewMessage = Encrypt(editedMessage, key, iv) 
 
     socket.emit('editMessage', encryptedNewMessage, oldMessage, id)
@@ -137,7 +145,7 @@ const Room = () => {
 
   function displayInput(){
     const input = 
-      <>
+      <div className='input-container'>
         <input
           type="text"
           className="message-input"
@@ -148,7 +156,7 @@ const Room = () => {
         <button className="send-button" onClick={handleSentMessage}>
           Send
         </button>
-      </>
+      </div>
 
     return input
   }

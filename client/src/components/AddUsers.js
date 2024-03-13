@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import '../styles/showUsers.css'
 
 const AddUserForm = ( {onAddUsers, token} ) => {
   const [showModal, setShowModal] = useState(false);
@@ -52,7 +53,7 @@ const AddUserForm = ( {onAddUsers, token} ) => {
 
   return (
     <div>
-      <button onClick={() => setShowModal(true)}>Add Users</button>
+      <button className="leave-button"onClick={() => setShowModal(true)}>Add Users</button>
       {showModal && (
         <div className="modal">
           <div className="modal-content">

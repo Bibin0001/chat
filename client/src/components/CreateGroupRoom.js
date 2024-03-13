@@ -1,4 +1,6 @@
 import React, { useState } from 'react';
+import styles from '../styles/styles.module.css'
+import '../styles/createGroupRoom.css'
 
 const CreateGroupRoom = ({ onCreateRoom, token }) => {
   const [showModal, setShowModal] = useState(false);
@@ -66,7 +68,7 @@ const CreateGroupRoom = ({ onCreateRoom, token }) => {
 
   return (
     <div>
-      <button onClick={() => setShowModal(true)}>Create Group Room</button>
+      <button className={styles.button} onClick={() => setShowModal(true)}>Create Group Room</button>
       {showModal && (
         <div className="modal">
           <div className="modal-content">

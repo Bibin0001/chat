@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import './showUsers.css'
+import '../styles/showUsers.css'
 
 const UserList = ({ users, isAdmin, onKick, onLeave }) => {
   const [showUsers, setShowUsers] = useState(false);
@@ -11,7 +11,7 @@ const UserList = ({ users, isAdmin, onKick, onLeave }) => {
 
   return (
     <div>
-      <button onClick={handleButtonClick}>Show Users</button>
+      <button className="leave-button"onClick={handleButtonClick}>Show Users</button>
       {showUsers && (
         <div> 
           <ul className="user-list">
@@ -28,7 +28,7 @@ const UserList = ({ users, isAdmin, onKick, onLeave }) => {
           </ul>
           
           <div>
-            <button onClick={() => onLeave()}>Leave</button>
+            <button className="leave-button" onClick={() => onLeave()}>Leave</button>
           </div>
         </div> 
       )}

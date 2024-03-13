@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import '../styles/messages.css'
 
 const Message = ({ id, text, sender, isCurrentUser, onEdit, onDelete}) => {
   const [isHovered, setIsHovered] = useState(false);
@@ -48,7 +49,7 @@ const Message = ({ id, text, sender, isCurrentUser, onEdit, onDelete}) => {
         />
       ) : (
         <div className="message-content">
-          <p>{sender}</p>
+          <p>{sender}:</p>
           <p>{text}</p>
         </div>
       )}
@@ -56,13 +57,13 @@ const Message = ({ id, text, sender, isCurrentUser, onEdit, onDelete}) => {
         <div className="message-actions">
           {isEditing ? (
             <>
-              <button onClick={handleSaveEdit}>Save</button>
-              <button onClick={handleCancelEdit}>Cancel</button>
+              <button className="edit-button" onClick={handleSaveEdit}>Save</button>
+              <button className="cancel-button" onClick={handleCancelEdit}>Cancel</button>
             </>
           ) : (
             <>
-              <button onClick={handleEdit}>Edit</button>
-              <button onClick={handleDelete}>Delete</button>
+              <button className="edit-button" onClick={handleEdit}>Edit</button>
+              <button className="cancel-button" onClick={handleDelete}>Delete</button>
             </>
           )}
         </div>

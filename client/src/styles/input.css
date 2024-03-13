@@ -1,0 +1,38 @@
+.input-container {
+  position: fixed;
+  bottom: 0;
+  width: 100%;
+  padding: 10px;
+  background-color: #2d2d2d; /* Dark background color */
+  display: flex; /* Use flexbox for horizontal alignment */
+  justify-content: center; /* Center items horizontally */
+  align-items: center; /* Center items vertically */
+}
+
+
+.message-input {
+  flex: 1; /* Take up remaining space */
+  padding: 10px;
+  border: none;
+  border-radius: 5px;
+  background-color: #333; /* Dark input background color */
+  color: #fff; /* Light input text color */
+  margin-right: 10px;
+  font-size: 16px; /* Adjust font size */
+}
+
+.send-button {
+  padding: 10px 20px;
+  border: none;
+  border-radius: 5px;
+  background-color: #007bff; /* Blue send button */
+  color: #fff; /* Light button text color */
+  cursor: pointer;
+}
+
+.send-button:hover {
+  background-color: #0056b3; /* Darker blue on hover */
+}
+
+
+

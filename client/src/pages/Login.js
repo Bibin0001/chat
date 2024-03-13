@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import '../styles/login.css'
 
 const Login = () => {
   const [username, setUsername] = useState('');
@@ -40,7 +41,7 @@ const Login = () => {
   };
 
   return (
-    <div>
+    <div className='login-container'>
       <h2>Login</h2>
       <form>
         <label>
@@ -62,13 +63,13 @@ const Login = () => {
         </label>
         <br />
 
-        {error && <p style={{ color: 'red' }}>{error}</p>}
+        {error && <p className='error-message'>{error}</p>}
 
-        <button type="button" onClick={handleSubmit}>
+        <button type="button" className='login-button' onClick={handleSubmit}>
           Login
         </button>
       </form>
-      <a href='register/'> Don't have an account?</a>
+      <a href='register/' className='register-link'> Don't have an account?</a>
     </div>
   );
 };

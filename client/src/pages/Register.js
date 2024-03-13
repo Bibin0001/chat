@@ -2,6 +2,8 @@
 
 import React, { useState } from 'react';
 import { Navigate } from 'react-router-dom';
+import '../styles/register.css';
+
 const Register = () => {
 
   const [username, setUsername] = useState('');
@@ -60,7 +62,7 @@ const Register = () => {
   }
 
   return (
-    <div id="container">
+    <div className="register-container">
       <form onSubmit={handleSubmit}>
         <label htmlFor="username-field">Username:</label>
         <input
@@ -92,9 +94,10 @@ const Register = () => {
           onChange={(e) => setConfirmPassword(e.target.value)}
         />
 
-        {error && <p style={{ color: 'red' }}>{error}</p>}
-        <input type="submit" name="button" value="Register" id="input" />
+        {error && <p className="error-message">{error}</p>}
+        <input type="submit" name="button" value="Register" className="register-button" />
       </form>
+      <a href='/login' className='login-link'> Already have an account?</a>
     </div>
   );
 };

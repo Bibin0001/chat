@@ -1,6 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import socket from '../components/socket.js';
 import CreateGroupRoom from '../components/CreateGroupRoom'
+import styles from '../styles/styles.module.css'
+import userSearchStyles from '../styles/userSearch.module.css'
+import '../styles/home.css'
 
 const Home = () => {
 
@@ -100,8 +103,8 @@ const Home = () => {
       return <p> No chats available </p>
     }
     const renderedRooms = rooms.map((room) => (
-    <div key={room.roomId} onClick={() => handleRoomClick(room.roomId)}>
-      <p>{room.recipient}</p>
+    <div  className="chat-box" key={room.roomId} onClick={() => handleRoomClick(room.roomId)}>
+      <p >{room.recipient}</p>
     </div>
     ));
 
@@ -119,7 +122,7 @@ const Home = () => {
     }
 
     const renderedRooms = groupRooms.map((groupRoom) => (
-      <div key={groupRoom.roomId} onClick={() => handleGroupRoomClick(groupRoom.roomId)}>
+      <div className='chat-box' key={groupRoom.roomId} onClick={() => handleGroupRoomClick(groupRoom.roomId)}>
         <p>{groupRoom.roomName}</p>
 
       </div>
@@ -151,8 +154,9 @@ const Home = () => {
 
 
   return (
-    <div>
-      <div>
+    <div className="container">
+
+      <div className="user-search-container">
         <input
           type='text'
           placeholder='Search for other users'
@@ -169,19 +173,18 @@ const Home = () => {
       </div>
 
       <div>
-        <CreateGroupRoom onCreateRoom={handleCreateGroupRoom} />
+        <CreateGroupRoom  className="create-group-room" onCreateRoom={handleCreateGroupRoom} />
         
       </div>
 
-      <div>
-        <h2>Group Chats</h2>
+      <div className="section">
+        <h2 className="section-heading">Group Chats</h2>
         {displayGroupRooms()}
 
       </div>
 
       <div>
-        <h2>Home pageee</h2>
-        <h2>Direct Messages</h2>
+        <h2 className="section-heading">Direct Messages</h2>
         {displayRooms()}
 
       </div>
@@ -191,5 +194,4 @@ const Home = () => {
 
 export default Home;
   
-        /*<CreateGroupRoom onCreateRoom={handleCreateRoom} />*/
 

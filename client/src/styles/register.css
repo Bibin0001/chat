@@ -1,0 +1,51 @@
+.register-container {
+  width: 300px;
+  margin: 0 auto;
+  padding: 20px; 
+  background-color: #2d2d2d;
+  border-radius: 10px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  position: fixed; /* Fix the position */
+  top: 50%; /* Position from the top 50% */
+  left: 50%; /* Position from the left 50% */
+  transform: translate(-50%, -50%); /* Centering trick */
+}
+
+.register-container form {
+  display: flex;
+  flex-direction: column;
+}
+
+.register-container label {
+  margin-bottom: 10px;
+  color: #fff; /* Label text color */
+}
+
+.register-container input {
+  width: 95%;
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  margin-bottom: 10px;
+}
+
+.register-container .error-message {
+  color: red;
+  margin-bottom: 10px;
+}
+
+.register-container .register-button {
+  padding: 10px;
+  background-color: #007bff;
+  color: #fff;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.register-container .register-button:hover {
+  background-color: #0056b3;
+}
+.login-link{
+  color: #0056b3;
+}

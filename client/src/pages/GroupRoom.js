@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import { Navigate } from 'react-router-dom';
 import socket from '../components/socket';
-import './room.css'
+import '../styles/room.css'
 import Message from '../components/Message'
 import UserList from '../components/showUsers'
 import AddUserForm from '../components/AddUsers'
@@ -109,7 +109,12 @@ const GroupRoom = () => {
 
   
   function handleEditMessage(id, editedMessage)  {
-    const oldMessage = encryptedMessages[id - 1].content
+    let oldMessage = ''
+      if (encryptedMessages[id - 1] == undefined){
+        oldMessage = encryptedMessages[id].content
+      } else{
+        oldMessage = encryptedMessages[id - 1].content
+      }
     const encryptedNewMessage = Encrypt(editedMessage, key, iv) 
 
     socket.emit('editMessage', encryptedNewMessage, oldMessage, id)

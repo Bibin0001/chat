@@ -1,0 +1,33 @@
+
+.user-list {
+  list-style: none;
+  padding: 0;
+}
+
+.user-list li {
+  margin-bottom: 10px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.admin-functionalities button {
+  padding: 5px 10px;
+  border: none;
+  border-radius: 5px;
+  background-color: #007bff;
+  color: #fff;
+  cursor: pointer;
+}
+
+.admin-functionalities button:hover {
+  background-color: #0056b3;
+}
+.leave-button{
+  padding: 5px 10px;
+  border: none;
+  border-radius: 5px;
+  background-color: #007bff;
+  color: #fff;
+  cursor: pointer;
+}
